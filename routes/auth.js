@@ -1,6 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import User from '../models/User.js';
 
 const router = express.Router();
@@ -50,9 +51,15 @@ const router = express.Router();
 // Register
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password, studentId } = req.body;
+    const { name, email, password, studentId,phone } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ name, email, password: hashedPassword, studentId });
+    const user = new User({
+      name: name,
+      email: email,
+      password: hashedPassword,
+      studentId: studentId,
+      phone: phone||crypto.randomUUID(),
+    });
     await user.save();
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
     res.status(201).json({ token, user: { id: user._id, name, email } });
