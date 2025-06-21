@@ -61,8 +61,8 @@ router.post('/register', async (req, res) => {
       phone: phone||crypto.randomUUID(),
     });
     await user.save();
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
-    res.status(201).json({ token, user: { id: user._id, name, email } });
+    const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET);
+    res.status(201).json({ token, user: { id: user._id, name, email, role: user.role } });
   } catch (error) {
     console.error(error);
     if (error.code === 11000) {
@@ -115,8 +115,8 @@ router.post('/login', async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
-    res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
+    const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET);
+    res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }

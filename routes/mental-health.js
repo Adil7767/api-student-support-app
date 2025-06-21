@@ -1,5 +1,11 @@
 import express from 'express';
+import OpenAI from 'openai';
+
 const router = express.Router();
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 /**
  * @swagger
@@ -49,15 +55,30 @@ router.get('/resources', (req, res) => {
  *       200:
  *         description: AI chat response
  */
-router.post('/chat', (req, res) => {
-  const responses = [
-    "I understand you're going through a difficult time. Remember that it's okay to ask for help.",
-    "Your feelings are valid. Consider reaching out to our counseling services for professional support.",
-    "Self-care is important. Try taking some deep breaths and remember you're not alone.",
-    "Have you considered talking to a counselor? They can provide personalized strategies to help you cope."
-  ];
-  const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-  res.json({ response: randomResponse });
+router.post('/chat', async (req, res) => {
+  try {
+    const { message } = req.body;
+
+    if (!message) {
+      return res.status(400).json({ message: 'Message is required' });
+    }
+
+    const completion = await openai.chat.completions.create({
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a compassionate and supportive mental health assistant for students. Provide helpful and encouraging responses. Do not give medical advice. If the situation seems serious, strongly advise the user to seek help from a qualified professional or a crisis hotline.',
+        },
+        { role: 'user', content: message },
+      ],
+      model: 'gpt-3.5-turbo',
+    });
+
+    res.json({ response: completion.choices[0].message.content });
+  } catch (error) {
+    console.error('Error with OpenAI API:', error);
+    res.status(500).json({ message: 'Failed to get response from AI assistant' });
+  }
 });
 
 export default router; 

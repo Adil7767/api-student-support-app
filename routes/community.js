@@ -58,25 +58,77 @@ const router = express.Router();
  *       500:
  *         description: Error creating event
  */
-router.get('/events', async (req, res) => {
-  try {
-    const events = await Event.find().sort({ date: 1 });
-    res.json(events);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching events', error: error.message });
-  }
-});
+router
+  .route('/events')
+  .get(async (req, res) => {
+    try {
+      const events = await Event.find().sort({ date: 1 });
+      res.json(events);
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching events', error: error.message });
+    }
+  })
+  .post(authenticateToken, async (req, res) => {
+    try {
+      const { title, description, date, location, category } = req.body;
+      const event = new Event({
+        title,
+        description,
+        date,
+        location,
+        category,
+        createdBy: req.user.userId,
+      });
+      await event.save();
+      res.status(201).json(event);
+    } catch (error) {
+      res.status(500).json({ message: 'Error creating event', error: error.message });
+    }
+  });
 
-router.post('/events', authenticateToken, async (req, res) => {
-  try {
-    const { title, description, date, location, category } = req.body;
-    const event = new Event({ title, description, date, location, category });
-    await event.save();
-    res.status(201).json(event);
-  } catch (error) {
-    res.status(500).json({ message: 'Error creating event', error: error.message });
-  }
-});
+router
+  .route('/events/:id')
+  .put(authenticateToken, async (req, res) => {
+    try {
+      const event = await Event.findById(req.params.id);
+      if (!event) {
+        return res.status(404).json({ message: 'Event not found' });
+      }
+
+      if (event.createdBy.toString() !== req.user.userId && req.user.role !== 'admin') {
+        return res.status(403).json({ message: 'You are not authorized to update this event' });
+      }
+
+      const { title, description, date, location, category } = req.body;
+      event.title = title || event.title;
+      event.description = description || event.description;
+      event.date = date || event.date;
+      event.location = location || event.location;
+      event.category = category || event.category;
+
+      await event.save();
+      res.json(event);
+    } catch (error) {
+      res.status(500).json({ message: 'Error updating event', error: error.message });
+    }
+  })
+  .delete(authenticateToken, async (req, res) => {
+    try {
+      const event = await Event.findById(req.params.id);
+      if (!event) {
+        return res.status(404).json({ message: 'Event not found' });
+      }
+
+      if (event.createdBy.toString() !== req.user.userId && req.user.role !== 'admin') {
+        return res.status(403).json({ message: 'You are not authorized to delete this event' });
+      }
+
+      await event.deleteOne();
+      res.json({ message: 'Event deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ message: 'Error deleting event', error: error.message });
+    }
+  });
 
 /**
  * @swagger
@@ -117,29 +169,72 @@ router.post('/events', authenticateToken, async (req, res) => {
  *       500:
  *         description: Error creating post
  */
-router.get('/posts', async (req, res) => {
-  try {
-    const posts = await Post.find()
-      .populate('author', 'name')
-      .populate('comments.user', 'name')
-      .sort({ createdAt: -1 });
-    res.json(posts);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching posts', error: error.message });
-  }
-});
+router
+  .route('/posts')
+  .get(async (req, res) => {
+    try {
+      const posts = await Post.find()
+        .populate('author', 'name')
+        .populate('comments.user', 'name')
+        .sort({ createdAt: -1 });
+      res.json(posts);
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching posts', error: error.message });
+    }
+  })
+  .post(authenticateToken, async (req, res) => {
+    try {
+      const { title, content, category } = req.body;
+      const post = new Post({ title, content, author: req.user.userId, category });
+      await post.save();
+      await post.populate('author', 'name');
+      res.status(201).json(post);
+    } catch (error) {
+      res.status(500).json({ message: 'Error creating post', error: error.message });
+    }
+  });
 
-router.post('/posts', authenticateToken, async (req, res) => {
-  try {
-    const { title, content, category } = req.body;
-    const post = new Post({ title, content, author: req.user.userId, category });
-    await post.save();
-    await post.populate('author', 'name');
-    res.status(201).json(post);
-  } catch (error) {
-    res.status(500).json({ message: 'Error creating post', error: error.message });
-  }
-});
+router
+  .route('/posts/:id')
+  .put(authenticateToken, async (req, res) => {
+    try {
+      const post = await Post.findById(req.params.id);
+      if (!post) {
+        return res.status(404).json({ message: 'Post not found' });
+      }
+
+      if (post.author.toString() !== req.user.userId && req.user.role !== 'admin') {
+        return res.status(403).json({ message: 'You are not authorized to update this post' });
+      }
+
+      const { title, content, category } = req.body;
+      post.title = title || post.title;
+      post.content = content || post.content;
+      post.category = category || post.category;
+
+      await post.save();
+      res.json(post);
+    } catch (error) {
+      res.status(500).json({ message: 'Error updating post', error: error.message });
+    }
+  })
+  .delete(authenticateToken, async (req, res) => {
+    try {
+      const post = await Post.findById(req.params.id);
+      if (!post) {
+        return res.status(404).json({ message: 'Post not found' });
+      }
+
+      if (post.author.toString() !== req.user.userId && req.user.role !== 'admin') {
+        return res.status(403).json({ message: 'You are not authorized to delete this post' });
+      }
+
+      await post.deleteOne();
+      res.json({ message: 'Post deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ message: 'Error deleting post', error: error.message });
+    }
+  });
 
 /**
  * @swagger

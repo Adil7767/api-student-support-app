@@ -31,7 +31,8 @@ First, a user must register an account.
       "user": {
         "id": "60c72b2f9b1d8c001f8e4cde",
         "name": "Test User",
-        "email": "test.user@example.com"
+        "email": "test.user@example.com",
+        "role": "user"
       }
     }
     ```
@@ -126,6 +127,24 @@ Creates a new community event.
     }
     ```
 
+#### `PUT /api/community/events/:id`
+Updates an existing community event.
+*   **Auth Required**: Yes (must be the creator of the event or an admin)
+*   **Request Body**:
+    ```json
+    {
+        "title": "Updated Study Group",
+        "description": "An updated study group for final exams.",
+        "date": "2025-12-02T10:00:00Z",
+        "location": "Library, Room 205",
+        "category": "Academic"
+    }
+    ```
+
+#### `DELETE /api/community/events/:id`
+Deletes a community event.
+*   **Auth Required**: Yes (must be the creator of the event or an admin)
+
 #### `GET /api/community/posts`
 Retrieves all community posts.
 *   **Auth Required**: No
@@ -141,6 +160,22 @@ Creates a new community post.
         "category": "Academic"
     }
     ```
+
+#### `PUT /api/community/posts/:id`
+Updates an existing community post.
+*   **Auth Required**: Yes (must be the creator of the post or an admin)
+*   **Request Body**:
+    ```json
+    {
+        "title": "Need urgent help with Calculus II",
+        "content": "I really need someone to explain integration by parts.",
+        "category": "Academic"
+    }
+    ```
+
+#### `DELETE /api/community/posts/:id`
+Deletes a community post.
+*   **Auth Required**: Yes (must be the creator of the post or an admin)
 
 #### `GET /api/community/volunteer`
 Retrieves volunteer opportunities.
