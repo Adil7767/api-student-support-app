@@ -21,9 +21,13 @@ const router = express.Router();
  *     responses:
  *       200:
  *         description: List of events
+ *       500:
+ *         description: Error fetching events
  *   post:
  *     summary: Create a new event (auth required)
  *     tags: [Community]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -83,9 +87,13 @@ router.post('/events', authenticateToken, async (req, res) => {
  *     responses:
  *       200:
  *         description: List of posts
+ *       500:
+ *         description: Error fetching posts
  *   post:
  *     summary: Create a new post (auth required)
  *     tags: [Community]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:

@@ -4,7 +4,7 @@ const router = express.Router();
 /**
  * @swagger
  * tags:
- *   name: MentalHealth
+ *   name: Mental Health
  *   description: Mental health support
  */
 
@@ -13,7 +13,7 @@ const router = express.Router();
  * /api/mental-health/resources:
  *   get:
  *     summary: Get mental health resources
- *     tags: [MentalHealth]
+ *     tags: [Mental Health]
  *     responses:
  *       200:
  *         description: List of mental health resources
@@ -33,7 +33,7 @@ router.get('/resources', (req, res) => {
  * /api/mental-health/chat:
  *   post:
  *     summary: Get AI-powered mental health chat response
- *     tags: [MentalHealth]
+ *     tags: [Mental Health]
  *     requestBody:
  *       required: true
  *       content:
