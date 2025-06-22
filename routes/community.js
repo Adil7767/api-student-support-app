@@ -86,6 +86,68 @@ router
     }
   });
 
+/**
+ * @swagger
+ * /api/community/events/{id}:
+ *   put:
+ *     summary: Update an event
+ *     tags: [Community]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               date:
+ *                 type: string
+ *                 format: date-time
+ *               location:
+ *                 type: string
+ *               category:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Event updated
+ *       403:
+ *         description: Not authorized
+ *       404:
+ *         description: Event not found
+ *       500:
+ *         description: Error updating event
+ *   delete:
+ *     summary: Delete an event
+ *     tags: [Community]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Event deleted
+ *       403:
+ *         description: Not authorized
+ *       404:
+ *         description: Event not found
+ *       500:
+ *         description: Error deleting event
+ */
 router
   .route('/events/:id')
   .put(authenticateToken, async (req, res) => {
@@ -194,6 +256,63 @@ router
     }
   });
 
+/**
+ * @swagger
+ * /api/community/posts/{id}:
+ *   put:
+ *     summary: Update a post
+ *     tags: [Community]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               content:
+ *                 type: string
+ *               category:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Post updated
+ *       403:
+ *         description: Not authorized
+ *       404:
+ *         description: Post not found
+ *       500:
+ *         description: Error updating post
+ *   delete:
+ *     summary: Delete a post
+ *     tags: [Community]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Post deleted
+ *       403:
+ *         description: Not authorized
+ *       404:
+ *         description: Post not found
+ *       500:
+ *         description: Error deleting post
+ */
 router
   .route('/posts/:id')
   .put(authenticateToken, async (req, res) => {

@@ -198,7 +198,39 @@ Retrieves job opportunities.
 ### Mental Health
 
 #### `GET /api/mental-health/resources`
-Get mental health resources.
+Retrieves all mental health resources.
+*   **Auth Required**: No
+*   **Response (200 OK)**: A list of resources.
+
+#### `POST /api/mental-health/resources`
+Creates a new mental health resource.
+*   **Auth Required**: No
+*   **Request Body**:
+    ```json
+    {
+      "title": "New Resource",
+      "description": "Description of the new resource.",
+      "contact": "contact@info.com",
+      "type": "wellness"
+    }
+    ```
+
+#### `GET /api/mental-health/resources/:id`
+Retrieves a single mental health resource by its ID.
+*   **Auth Required**: No
+
+#### `PUT /api/mental-health/resources/:id`
+Updates a mental health resource.
+*   **Auth Required**: No
+*   **Request Body**:
+    ```json
+    {
+      "title": "Updated Resource Title"
+    }
+    ```
+
+#### `DELETE /api/mental-health/resources/:id`
+Deletes a mental health resource.
 *   **Auth Required**: No
 
 #### `POST /api/mental-health/chat`
