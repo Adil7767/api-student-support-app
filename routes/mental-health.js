@@ -253,24 +253,33 @@ router.post('/chat', async (req, res) => {
       return res.status(400).json({ message: 'Message is required' });
     }
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [
-        {
-          role: 'system',
-          content:
-            'You are a compassionate and supportive mental health assistant for students. Provide helpful and encouraging responses. Do not give medical advice. If the situation seems serious, strongly advise the user to seek help from a qualified professional or a crisis hotline.',
+    const response = await axios.post(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        model: 'gpt-3.5-turbo',
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You are a compassionate and supportive mental health assistant for students. Provide helpful and encouraging responses. Do not give medical advice. If the situation seems serious, strongly advise the user to seek help from a qualified professional or a crisis hotline.',
+          },
+          {
+            role: 'user',
+            content: message,
+          },
+        ],
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer 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`, // ✅ Set this in your .env file
         },
-        {
-          role: 'user',
-          content: message,
-        },
-      ],
-    });
+      }
+    );
 
-    res.json({ response: completion.choices[0].message.content });
+    res.json({ response: response.data.choices[0].message.content });
   } catch (error) {
-    console.error('Error with OpenAI API:', error);
+    console.error('Error with OpenAI API:', error.response?.data || error.message);
     res.status(500).json({ message: 'Failed to get response from AI assistant' });
   }
 });
