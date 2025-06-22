@@ -38,7 +38,9 @@ const swaggerDefinition = {
     description: 'API documentation for the Student Support App backend',
   },
   servers: [
-    { url: 'http://localhost:3000', description: 'Local server' }
+    process.env.NODE_ENV === 'production'
+      ? { url: 'https://api-student-support-app.vercel.app', description: 'Production server' }
+      : { url: 'http://localhost:3000', description: 'Local server' }
   ],
   components: {
     securitySchemes: {
