@@ -6,7 +6,7 @@ import { openAIService } from '../api/OpenAIService.js';
 const router = express.Router();
 
 const openai = new OpenAI({
-  apiKey: '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',
+  apiKey: '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',
 });
 
 /**
