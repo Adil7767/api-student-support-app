@@ -1,5 +1,6 @@
 import express from 'express';
 import OpenAI from 'openai';
+import axios, { AxiosResponse } from 'axios';
 import Resource from '../models/Resource.js';
 import { openAIService } from '../api/OpenAIService.js';
 
