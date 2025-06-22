@@ -274,7 +274,7 @@ router.post('/chat', async (req, res) => {
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // ✅ Environment-based key
+          Authorization: "Bearer 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", // ✅ Environment-based key
         },
       }
     );
