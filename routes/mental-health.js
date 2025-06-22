@@ -249,7 +249,8 @@ router.delete('/resources/:id', async (req, res) => {
 router.post('/chat', async (req, res) => {
   try {
     const { message } = req.body;
-console.log("mesaage",message)
+    console.log("message", message);
+
     if (!message) {
       return res.status(400).json({ message: 'Message is required' });
     }
@@ -257,7 +258,7 @@ console.log("mesaage",message)
     const response = await axios.post(
       'https://api.openai.com/v1/chat/completions',
       {
-        model: 'gpt-4o',
+        model: 'gpt-4o', // or 'gpt-3.5-turbo' if you have quota issues
         messages: [
           {
             role: 'system',
@@ -273,16 +274,19 @@ console.log("mesaage",message)
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer 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`, // ✅ Set this in your .env file
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // ✅ Environment-based key
         },
       }
     );
-console.log("response",response)
+
+    console.log("OpenAI response:", response.data);
+
     res.json({ response: response.data.choices[0].message.content });
   } catch (error) {
     console.error('Error with OpenAI API:', error.response?.data || error.message);
     res.status(500).json({ message: 'Failed to get response from AI assistant' });
   }
 });
+
 
 export default router;
