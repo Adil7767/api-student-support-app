@@ -248,23 +248,25 @@ router.delete('/resources/:id', async (req, res) => {
 router.post('/chat', async (req, res) => {
   try {
     const { message } = req.body;
-    openAIService.sendMessage(message)
-    .then(reply => console.log(reply))
-    .catch(err => console.error(err));
-    // if (!message) {
-    //   return res.status(400).json({ message: 'Message is required' });
-    // }
 
-    // const completion = await openai.chat.completions.create({
-    //   messages: [
-    //     {
-    //       role: 'system',
-    //       content: 'You are a compassionate and supportive mental health assistant for students. Provide helpful and encouraging responses. Do not give medical advice. If the situation seems serious, strongly advise the user to seek help from a qualified professional or a crisis hotline.',
-    //     },
-    //     { role: 'user', content: message },
-    //   ],
-    //   model: 'gpt-3.5-turbo',
-    // });
+    if (!message) {
+      return res.status(400).json({ message: 'Message is required' });
+    }
+
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        {
+          role: 'system',
+          content:
+            'You are a compassionate and supportive mental health assistant for students. Provide helpful and encouraging responses. Do not give medical advice. If the situation seems serious, strongly advise the user to seek help from a qualified professional or a crisis hotline.',
+        },
+        {
+          role: 'user',
+          content: message,
+        },
+      ],
+    });
 
     res.json({ response: completion.choices[0].message.content });
   } catch (error) {
