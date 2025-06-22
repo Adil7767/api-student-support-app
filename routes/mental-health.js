@@ -248,7 +248,7 @@ router.delete('/resources/:id', async (req, res) => {
 router.post('/chat', async (req, res) => {
   try {
     const { message } = req.body;
-
+console.log("mesaage",message)
     if (!message) {
       return res.status(400).json({ message: 'Message is required' });
     }
@@ -256,7 +256,7 @@ router.post('/chat', async (req, res) => {
     const response = await axios.post(
       'https://api.openai.com/v1/chat/completions',
       {
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4o',
         messages: [
           {
             role: 'system',
@@ -276,7 +276,7 @@ router.post('/chat', async (req, res) => {
         },
       }
     );
-
+console.log("response",response)
     res.json({ response: response.data.choices[0].message.content });
   } catch (error) {
     console.error('Error with OpenAI API:', error.response?.data || error.message);
